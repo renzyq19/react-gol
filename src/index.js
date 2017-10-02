@@ -8,33 +8,30 @@ const Box = ({ selectBox, row, col, boxClass, boxId }) => {
   return <div className={boxClass} id={boxId} onClick={selectThisBox} />;
 };
 
-class Grid extends React.Component {
-  render() {
-    const width = this.props.cols * 14;
-    const rowsArr = this.props.gridFull.map((row, i) =>
-      row.map((box, j) => {
-        const boxId = `${i}_${j}`;
-        const boxClass = `box ${box ? "on" : "off"}`;
-        return (
-          <Box
-            boxClass={boxClass}
-            key={boxId}
-            boxId={boxId}
-            row={i}
-            col={j}
-            selectBox={this.props.selectBox}
-          />
-        );
-      })
-    );
-
-    return (
-      <div className="grid" style={{ width: width }}>
-        {rowsArr}
-      </div>
-    );
-  }
-}
+const Grid = ({ cols, selectBox, gridFull }) => {
+  const width = cols * 14;
+  const rowsArr = gridFull.map((row, i) =>
+    row.map((box, j) => {
+      const boxId = `${i}_${j}`;
+      const boxClass = `box ${box ? "on" : "off"}`;
+      return (
+        <Box
+          boxClass={boxClass}
+          key={boxId}
+          boxId={boxId}
+          row={i}
+          col={j}
+          selectBox={selectBox}
+        />
+      );
+    })
+  );
+  return (
+    <div className="grid" style={{ width: width }}>
+      {rowsArr}
+    </div>
+  );
+};
 
 const Buttons = ({
   playButton,
@@ -82,12 +79,7 @@ class Main extends React.Component {
     this.speed = 100;
     this.rows = 30;
     this.cols = 50;
-    this.state = {
-      generation: 0,
-      gridFull: Array(this.rows)
-        .fill()
-        .map(() => Array(this.cols).fill(false))
-    };
+    this.state = {};
   }
 
   seed = () => {
@@ -137,10 +129,13 @@ class Main extends React.Component {
         this.cols = 100;
         this.rows = 50;
     }
+    this.clear();
   };
 
   clear = () => {
-    const emptyArray = this.state.gridFull.map(row => row.map(() => false));
+    const emptyArray = Array(this.rows)
+      .fill()
+      .map(() => Array(this.cols).fill(false));
     this.setState(() => ({
       gridFull: emptyArray,
       generation: 0
@@ -185,6 +180,10 @@ class Main extends React.Component {
       generation: generation + 1
     }));
   };
+
+  componentWillMount() {
+    this.clear();
+  }
 
   componentDidMount() {
     this.seed();
