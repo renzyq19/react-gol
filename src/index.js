@@ -160,7 +160,7 @@ class Main extends React.Component {
       let total = 0;
       for (let i = -1; i <= 1; i++) {
         for (let j = -1; j <= 1; j++) {
-          if (wrapGrid(i + row, j + col) && i && j) total++;
+          if (wrapGrid(i + row, j + col) && (i || j)) total++;
         }
       }
       return total;
@@ -169,7 +169,7 @@ class Main extends React.Component {
     const nextGrid = this.state.gridFull.map((row, i) =>
       row.map((cell, j) => {
         const n = neighbours(i, j);
-        let nextCell = cell;
+        let nextCell = false;
         if (cell) {
           if (n < 2) nextCell = false;
           else if (n <= 3) nextCell = true;
