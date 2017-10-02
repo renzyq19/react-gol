@@ -9,12 +9,11 @@ const Box = ({ selectBox, row, col, boxClass, boxId }) => {
 
 class Grid extends React.Component {
   render() {
-    const width = this.props.cols * 16;
-
+    const width = this.props.cols * 16 + 1;
     const rowsArr = this.props.gridFull.map((row, i) =>
       row.map((box, j) => {
         const boxId = `${i}_${j}`;
-        const boxClass = box ? "box on" : "box off";
+        const boxClass = `box ${box ? "on" : "off"}`;
         return (
           <Box
             boxClass={boxClass}
@@ -50,12 +49,26 @@ class Main extends React.Component {
     };
   }
 
+  seed = () => {
+    const gridRandom = this.state.gridFull.map(row =>
+      row.map(() => Math.floor(Math.random() * 4) === 1)
+    );
+
+    this.setState(() => {
+      debugger;
+      return { gridFull: gridRandom };
+    });
+  };
+
   selectBox = (row, col) =>
     this.setState(({ gridFull }) => {
-      const newVal = !gridFull[row][col];
-      gridFull[row][col] = newVal;
+      gridFull[row][col] = !gridFull[row][col];
       return { gridFull };
     });
+
+  componentDidMount() {
+    this.seed();
+  }
 
   render() {
     return (
